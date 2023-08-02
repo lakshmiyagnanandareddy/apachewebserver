@@ -1,0 +1,40 @@
+service:
+  ports:
+    nodeport: 30500
+    port: 80
+    targetport: 80
+
+webserverAutoScaling:
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    averageUtilization: 60
+
+webdeployment:
+  spec:
+    image: "nandu9948/apacheserver"
+    containerport: 80
+    livenessprobe:
+      port: 80
+      initialdelayseconds: 50
+      timeoutseconds: 500
+      periodseconds: 30
+      failurethresold: 1
+    readinessprobe:
+      port: 80
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      timeoutSeconds: 600
+      failureThreshold: 1
+    requests:
+      memory: "10Mi"
+      cpu: "50m"
+    limits:
+      memory: "15Mi"
+      cpu: "90m"
+
+resourcequota:
+  spec:
+    cpu: "200m"
+    memory: "500Mi"
+    pods: "6"

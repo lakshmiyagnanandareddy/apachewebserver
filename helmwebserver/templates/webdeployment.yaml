@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: webserver
+spec:
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: appserver
+        image: {{ .Values.webdeployment.spec.image }}
+        ports:
+        - containerPort: {{ .Values.webdeployment.spec.containerport }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.webdeployment.spec.livenessprobe.port }}
+          initialDelaySeconds: {{ .Values.webdeployment.spec.livenessprobe.initialdelayseconds }}
+          timeoutSeconds: {{ .Values.webdeployment.spec.livenessprobe.timeoutseconds }}
+          periodSeconds: {{ .Values.webdeployment.spec.livenessprobe.periodseconds }}
+          failureThreshold: {{ .Values.webdeployment.spec.livenessprobe.failurethresold }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.webdeployment.spec.readinessprobe.port }}
+          initialDelaySeconds: {{ .Values.webdeployment.spec.readinessprobe.initialdelayseconds }}
+          timeoutSeconds: {{ .Values.webdeployment.spec.readinessprobe.timeoutseconds }}
+          periodSeconds: {{ .Values.webdeployment.spec.readinessprobe.periodseconds }}
+          failureThreshold: {{ .Values.webdeployment.spec.readinessprobe.failurethresold }}
+        resources:
+          requests:
+            memory: {{ .Values.webdeployment.spec.requests.memory }}
+            cpu: {{ .Values.webdeployment.spec.requests.cpu }}
+          limits:
+            memory: {{ .Values.webdeployment.spec.limits.memory }}
+            cpu: {{ .Values.webdeployment.spec.limits.cpu }}
+
